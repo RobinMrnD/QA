@@ -1,6 +1,5 @@
 *** Settings ***
 Library    SeleniumLibrary
-Library    ../.venv/lib/python3.12/site-packages/robot/libraries/XML.py
 Variables    ../Variables/customerpage.py
 Resource    App.resource
 
@@ -47,6 +46,7 @@ Verify Customer Input
 
     ${birthday}    SeleniumLibrary.Get Element Attribute    ${customers_txt_birthday}    value
     Log To Console    ${birthday}
+    ${birthday}=    Format Birthday    ${birthday}
     Should Be Equal As Strings    ${user["birthday"]}    ${birthday}
     Log To Console    Birthday Input Is Correct
 
