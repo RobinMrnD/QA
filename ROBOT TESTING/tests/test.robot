@@ -13,11 +13,18 @@ TEST-000001
 TEST-000002
     ${users}    Get Random Customers
     Go To Customers Page
-    
+
+    ${ALL_VERIFIED_CUSTOMERS}=    Create List
+    Set Suite Variable    ${ALL_VERIFIED_CUSTOMERS}
+
     FOR    ${i}    IN    @{users}
         Create Customer    ${i}
         Verify Customer Input    ${i}
     END
+
+    Log To Console    ===== FINAL VERIFIED CUSTOMERS =====
+    Log To Console    ${ALL_VERIFIED_CUSTOMERS}
+
 
     
 

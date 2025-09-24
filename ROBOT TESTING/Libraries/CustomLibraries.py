@@ -16,7 +16,6 @@ class CustomLibraries():
         return first_five_customers
 
     def get_random_birthday(self):
-        # Format: MMDDYYYY (e.g. 10202001)
         return str(random.randint(1, 12)).zfill(2) + str(random.randint(1, 28)).zfill(2) + str(random.randint(1999, 2006))
 
     def generate_password(self, length=8):
