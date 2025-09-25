@@ -130,18 +130,32 @@ Clear And Input Text
     Input Text       ${locator}    ${value}
 
 Get Table Row Data
-    Sleep    3s
-    ${last_seen}    Get Text    ${last_seen_selector}
-    Log To Console    ${last_seen}
-    ${orders}    Get Text    ${orders_selector}
-    Log To Console    ${orders}
-    ${total_spent}    Get Text    ${total_spent_selector}
-    Log To Console    ${total_spent}
-    ${latest_purchase}    Get Text    ${latest_purchase_selector}
-    Log To Console    ${latest_purchase}
-    ${news}    Get Element Attribute    ${news_selector}     aria-label
-    Log To Console    ${news}
+    ${rows}=    Get Element Count    ${table_row}
+    FOR    ${r}    IN RANGE    1    ${rows+1}
+        ${name}=    Get Text    xpath=${name_selector.format(r=${r})}
+        ${last_seen}=    Get Text    xpath=${last_seen_selector.format(r=${r})}
+        ${orders}=    Get Text    xpath=${orders_selector.format(r=${r})}
+        ${total_spent}=    Get Text    xpath=${total_spent_selector.format(r=${r})}
+        ${latest_purchase}=    Get Text    xpath=${latest_purchase_selector.format(r=${r})}
+        ${news}=    Get Element Attribute    xpath=${news_selector.format(r=${r})}    aria-label
 
+        ${segments}=    Get WebElements    xpath=${segment_selector.format(r=${r})}
+        @{segment_texts}=    Create List
+        FOR    ${seg}    IN    @{segments}
+            ${text}=    Get Text    ${seg}
+            Append To List    ${segment_texts}    ${text}
+        END
+
+        Log To Console    ====== User ${r} ======
+        Log To Console    Name: ${name}
+        Log To Console    Last seen: ${last_seen}
+        Log To Console    Orders: ${orders}
+        Log To Console    Total spent: ${total_spent}
+        Log To Console    Latest purchase: ${latest_purchase}
+        Log To Console    News: ${news}
+        Log To Console    Segment: ${segment_texts}
+        Log To Console    --------------------------------------------
+    END
 
 
 
