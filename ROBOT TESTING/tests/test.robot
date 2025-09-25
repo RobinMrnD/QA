@@ -9,13 +9,8 @@ Suite Setup    Launch Browser
 *** Test Cases ***
 TEST-000001
     Login User
-
-TEST-000002
-    ${users}    Get Random Customers    ${5}
+    ${users}    Get Random Customers    1    5
     Go To Customers Page
-
-    ${Verified_Customers} =    Create List
-    Set Suite Variable    ${Verified_Customers}
 
     FOR    ${i}    IN RANGE    0    5
         ${user}=    Set Variable    ${users}[${i}]
@@ -23,7 +18,6 @@ TEST-000002
         Verify Customer Input    ${user}
     END
 
-    Log To Console    ${Verified_Customers}
 
     ${total}=    Get Length    ${users}
     ${end}=      Evaluate      ${total} + 1
@@ -33,6 +27,13 @@ TEST-000002
         Verify Customer Data    ${user}    ${index}
     END
 
+TEST-000002
+    ${users}    Get Random Customers    6    5
+    Log To Console    ${users}
+    Update Customer Table    ${users}
+    Sleep    500s
+
+   
 
 *** Keywords ***
 Launch Browser    

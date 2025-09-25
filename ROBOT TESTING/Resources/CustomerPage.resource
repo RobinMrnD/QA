@@ -72,33 +72,11 @@ Verify Customer Input
     Should Be Equal As Strings    ${user["password"]}    ${confirm_password}
     Log To Console    Confirm Password Input Is Correct
 
-    &{verified_customer} =    Create Dictionary
-    ...    first_name=${first_name}
-    ...    last_name=${second_name}
-    ...    email=${email}
-    ...    birthday=${birthday}
-    ...    address=${address}
-    ...    city=${city}
-    ...    stateAbbr=${stateAbbr}
-    ...    zipcode=${zipcode}
-    ...    password=${password}
-    ...    confirm_password=${confirm_password}
-
-
-    Append To List    ${Verified_Customers}    ${verified_customer}
-    Set Suite Variable    ${Verified_Customers}
 
     Go To Customers Page
     Refresh Current Page
 
-    # Go To Customers Page
-    # Refresh Current Page
-    # ${fetched_name}    Get Text     ((${table_row})[1]//td)[2]
-    # IF    "\\n" in """${fetched_name}"""
-    #     ${fetched_name}    Evaluate    """${fetched_name}""".replace("\\n","")[1:]
-    # END
-    # Should Contain     ${user["name"]}    ${fetched_name}
-    # Log To Console    ${fetched_name}
+    
 
 
 Open Customer By Index
@@ -113,7 +91,44 @@ Verify Customer Data
     Wait Until Element Is Visible    ${table_row}
     Open Customer By Index    ${index}
     Verify Customer Input    ${user}
-    
 
-    
+
+# May sometimes bug out and may need to be retried
+Update Customer Table
+    [Arguments]    ${users}
+    ${total}=    Get Length    ${users}
+    ${end}=      Evaluate    ${total} + 1
+
+    FOR    ${index}    IN RANGE    1    ${end}
+        ${user_index}=    Evaluate    ${index} - 1
+        ${user}=          Set Variable    ${users}[${user_index}]
+
+        Go To Customers Page
+        Open Customer By Index    ${index + 5}    
+        Wait Until Element Is Visible    ${customers_txt_firstname}
+
+        Clear And Input Text    ${customers_txt_firstname}  ${user["name"].split(" ")[0]}
+        Clear And Input Text    ${customers_txt_lastname}   ${user["name"].split(" ")[1]}
+        Clear And Input Text    ${customers_txt_email}    ${user["email"]}
+        Input Text    ${customers_txt_birthday}    ${user["birthday"]}
+        Clear And Input Text    ${customers_txt_address}    ${user["address"]["street"]} ${user["address"]["suite"]}
+        Clear And Input Text    ${customers_txt_city}    ${user["address"]["city"]}
+        Clear And Input Text    ${customers_txt_stateAbbr}    ${user["stateAbbr"]}
+        Clear And Input Text    ${customers_txt_zipcode}    ${user["address"]["zipcode"]}
+        Clear And Input Text    ${customers_txt_password}    ${user["password"]}
+        Clear And Input Text    ${customers_txt_confirm_password}     ${user["password"]}
+
+        Click Button    ${customers_btn_save}
+        Wait Until Page Contains    Customer updated
+
+        Verify Customer Data    ${user}    ${index + 5}
+    END
+
+
+Clear And Input Text
+    [Arguments]    ${locator}    ${value}
+    Click Element    ${locator}
+    Press Keys       ${locator}    CTRL+A    BACKSPACE
+    Input Text       ${locator}    ${value}
+
 
