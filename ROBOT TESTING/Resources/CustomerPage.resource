@@ -3,6 +3,7 @@
 Library    SeleniumLibrary
 Library    ../Libraries/CustomLibraries.py
 Library    Collections
+Library    String
 Variables  ../Variables/customerpage.py
 Resource   App.resource
 
@@ -76,8 +77,24 @@ Verify Customer Input
     Go To Customers Page
     Refresh Current Page
 
-    
+Create And Verify Customers
+    [Arguments]    ${users}
+    ${count} =    Get Length    ${users}
+    FOR    ${i}    IN RANGE    ${count}
+        ${user} =    Set Variable    ${users}[${i}]
+        Create Customer    ${user}
+        Verify Customer Input    ${user}
+    END
 
+Verify Customers Data In Table
+    [Arguments]    ${users}
+    ${total} =    Get Length    ${users}
+    ${end} =      Evaluate    ${total} + 1
+    FOR    ${index}    IN RANGE    1    ${end}
+        ${user_index}=    Evaluate    ${total} - ${index}
+        ${user}=    Set Variable    ${users}[${user_index}]
+        Verify Customer Data    ${user}    ${index}
+    END
 
 Open Customer By Index
     [Arguments]    ${index}
@@ -129,33 +146,79 @@ Clear And Input Text
     Press Keys       ${locator}    CTRL+A    BACKSPACE
     Input Text       ${locator}    ${value}
 
-Get Table Row Data
-    ${rows}=    Get Element Count    ${table_row}
-    FOR    ${r}    IN RANGE    1    ${rows+1}
-        ${name}=    Get Text    xpath=${name_selector.format(r=${r})}
-        ${last_seen}=    Get Text    xpath=${last_seen_selector.format(r=${r})}
-        ${orders}=    Get Text    xpath=${orders_selector.format(r=${r})}
-        ${total_spent}=    Get Text    xpath=${total_spent_selector.format(r=${r})}
-        ${latest_purchase}=    Get Text    xpath=${latest_purchase_selector.format(r=${r})}
-        ${news}=    Get Element Attribute    xpath=${news_selector.format(r=${r})}    aria-label
-
-        ${segments}=    Get WebElements    xpath=${segment_selector.format(r=${r})}
-        @{segment_texts}=    Create List
-        FOR    ${seg}    IN    @{segments}
-            ${text}=    Get Text    ${seg}
-            Append To List    ${segment_texts}    ${text}
-        END
-
-        Log To Console    ====== User ${r} ======
-        Log To Console    Name: ${name}
-        Log To Console    Last seen: ${last_seen}
-        Log To Console    Orders: ${orders}
-        Log To Console    Total spent: ${total_spent}
-        Log To Console    Latest purchase: ${latest_purchase}
-        Log To Console    News: ${news}
-        Log To Console    Segment: ${segment_texts}
-        Log To Console    --------------------------------------------
+Get Customer Name
+    [Arguments]    ${r}
+    ${target}=    Set Variable    //table//tbody//tr[${r}]//td[2]//a//*[self::span or self::p][last()]
+    ${has}=       Run Keyword And Return Status    Page Should Contain Element    ${target}
+    IF    ${has}
+        ${raw}=    Get Text    ${target}
+    ELSE
+        ${raw}=    Get Text    //table//tbody//tr[${r}]//td[2]//a
+        ${lines}=  Split To Lines    ${raw}
+        ${raw}=    Get From List    ${lines}    -1
     END
+    ${name}=    Replace String    ${raw}    \n    ${SPACE}
+    ${name}=    Strip String      ${name}
+    RETURN    ${name}
+
+Get Table Row Data
+   Go To Customers Page
+   Wait Until Element Is Visible    ${table_row}
+
+   ${row_count}=    Get Element Count    ${table_row}
+   ${end}=          Evaluate    ${row_count} + 1
+
+   FOR    ${r}    IN RANGE    1    ${end}
+       ${name}=              Get Customer Name    ${r}
+       ${last_seen}=         Get Text    //table//tbody//tr[${r}]//td[3]
+       ${orders}=            Get Text    //table//tbody//tr[${r}]//td[4]
+       ${total_spent}=       Get Text    //table//tbody//tr[${r}]//td[5]
+       ${latest_purchase}=   Get Text    //table//tbody//tr[${r}]//td[6]
+       ${news}=              Get Element Attribute    xpath=${news_selector.format(r=${r})}    aria-label
+       ${segments}=          Get WebElements    xpath=${segment_selector.format(r=${r})}
+       @{segment_texts}=     Create List
+       FOR    ${seg}    IN    @{segments}
+           ${text}=    Get Text    ${seg}
+           Append To List    ${segment_texts}    ${text}
+       END
+       Log To Console    ====== User ${r} ======
+       Log To Console    Name: ${name}
+       Log To Console    Last seen: ${last_seen}
+       Log To Console    Orders: ${orders}
+       Log To Console    Total spent: ${total_spent}
+       Log To Console    Latest purchase: ${latest_purchase}
+       Log To Console    News: ${news}
+       Log To Console    Segment: ${segment_texts}
+       Log To Console    --------------------------------------------
+   END
+
+
+Get Expense Report
+    ${rows}=    Get Element Count    ${table_row}
+    ${counter}=    Set Variable    1
+    ${total_spending}=    Set Variable    0
+
+    FOR    ${r}    IN RANGE    1    ${rows+1}
+        ${name}=    Get Customer Name    ${r}
+        ${total_spent}=    Get Text    xpath=${total_spent_selector.format(r=${r})}
+        ${clean}=    Evaluate    float(str("${total_spent}").replace("$","").replace(",","").strip())
+        Run Keyword If    ${clean} > 0    Log To Console    ${counter}. ${name}: ${total_spent}
+        Run Keyword If    ${clean} > 0    Set Variable    ${counter}=    Evaluate    ${counter} + 1
+        ${total_spending}=    Evaluate    ${total_spending} + ${clean}
+    END
+
+    ${total_formatted}=    Evaluate    f"{${total_spending}:,.2f}"
+    Log To Console    ================================
+    Log To Console    Total Customer Spending: $${total_formatted}
+    Log To Console    ================================
+
+    ${threshold}=    Set Variable    3500
+    ${threshold_fmt}=    Evaluate    "{:,}".format(${threshold})
+    ${total_formatted}=    Evaluate    "{:.2f}".format(${total_spending})
+
+    Run Keyword If    ${total_spending} < ${threshold}    Fail    FAIL: Total spending ($${total_formatted}) is below minimum threshold ($${threshold_fmt})
+    ...    ELSE    Log To Console    PASS: Total spending ($${total_formatted}) meets minimum threshold ($${threshold_fmt})
+
 
 
 

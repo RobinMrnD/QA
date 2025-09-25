@@ -15,13 +15,7 @@ customers_txt_confirm_password =   '//input[@name="confirm_password"]'
 customers_btn_save =   '//button[@aria-label="Save"]'
 
 # Table Elements
-
-table_row = '//table//tbody//tr'
-
-name_selector = '//table//tbody//tr[{r}]//td[2]'
-last_seen_selector = '//table//tbody//tr[{r}]//td[3]'
-orders_selector = '//table//tbody//tr[{r}]//td[4]'
-total_spent_selector = '//table//tbody//tr[{r}]//td[5]'
-latest_purchase_selector = '//table//tbody//tr[{r}]//td[6]'
-news_selector = '//table//tbody//tr[{r}]//td[7]//*[name()="svg"]'
+table_row = '//table//tbody//tr' 
+total_spent_selector = '//table//tbody//tr[{r}]//td[5]' 
+news_selector = '//table//tbody//tr[{r}]//td[7]//*[name()="svg"]' 
 segment_selector = '//table//tbody//tr[{r}]//td[8]//div[contains(@class,"MuiChip-root")]//span'

@@ -1,0 +1,74 @@
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.py.class
+*.egg-info/
+*.egg
+*.log
+
+# Virtual environment
+venv/
+.env
+*.env
+
+# ========================
+# Robot Framework
+# ========================
+# Robot output files
+output.xml
+report.html
+log.html
+interactive_console_output.xml
+debug.log
+
+# Robot screenshots and test artifacts
+selenium-screenshots/
+screenshots/
+reports/
+*.png
+*.jpg
+
+# ========================
+# Node.js / React (if frontend is in same repo)
+# ========================
+node_modules/
+dist/
+build/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ========================
+# Laravel / PHP (if backend is in same repo)
+# ========================
+vendor/
+storage/
+public/storage
+public/hot
+.env
+.env.*.php
+.env.*.json
+Homestead.yaml
+Homestead.json
+.vagrant
+.phpunit.result.cache
+
+# ========================
+# IDE / Editor
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ========================
+# OS-specific
+# ========================
+.DS_Store
+Thumbs.db
