@@ -4,16 +4,15 @@ import string
 from datetime import datetime
 
 class CustomLibraries():
-    def get_random_customers(self):
+    def get_random_customers(self,count):
         response = requests.get("https://jsonplaceholder.typicode.com/users", verify=True)
         users = response.json()
-        first_five_customers = users[:5]
-        for i in first_five_customers:
+        for i in users:
             i["birthday"] = self.get_random_birthday()
             i["password"] = self.generate_password()
             i["stateAbbr"] = str(i["address"]["street"][0]) + str(i["address"]["suite"][0]) + str(i["address"]["city"][0])
-        print(first_five_customers)
-        return first_five_customers
+        print(users[:count])
+        return users[:count]
 
     def get_random_birthday(self):
         return str(random.randint(1, 12)).zfill(2) + str(random.randint(1, 28)).zfill(2) + str(random.randint(1999, 2006))

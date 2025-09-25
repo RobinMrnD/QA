@@ -72,7 +72,7 @@ Verify Customer Input
     Should Be Equal As Strings    ${user["password"]}    ${confirm_password}
     Log To Console    Confirm Password Input Is Correct
 
-    &{verified_customer}=    Create Dictionary
+    &{verified_customer} =    Create Dictionary
     ...    first_name=${first_name}
     ...    last_name=${second_name}
     ...    email=${email}
@@ -84,19 +84,12 @@ Verify Customer Input
     ...    password=${password}
     ...    confirm_password=${confirm_password}
 
-    Log To Console    ===== Verified Customer Captured =====
-    Log To Console    ${verified_customer}
 
-    Append To List    ${ALL_VERIFIED_CUSTOMERS}    ${verified_customer}
-    Set Suite Variable    ${ALL_VERIFIED_CUSTOMERS}
-
-    Log To Console    ===== Current Accumulated Customers =====
-    Log To Console    ${ALL_VERIFIED_CUSTOMERS}
+    Append To List    ${Verified_Customers}    ${verified_customer}
+    Set Suite Variable    ${Verified_Customers}
 
     Go To Customers Page
     Refresh Current Page
-
-
 
     # Go To Customers Page
     # Refresh Current Page
@@ -106,5 +99,21 @@ Verify Customer Input
     # END
     # Should Contain     ${user["name"]}    ${fetched_name}
     # Log To Console    ${fetched_name}
+
+
+Open Customer By Index
+    [Arguments]    ${index}
+    ${locator}=    Set Variable    //table//tbody//tr[${index}]//td[2]//a
+    Click Element    ${locator}
+    Wait Until Element Is Visible    ${customers_txt_firstname}
+
+Verify Customer Data
+    [Arguments]    ${user}    ${index}
+    Go To Customers Page
+    Wait Until Element Is Visible    ${table_row}
+    Open Customer By Index    ${index}
+    Verify Customer Input    ${user}
+    
+
     
 

@@ -1,5 +1,6 @@
-
 nav_btn_customers   =   '//a[@href="#/customers"]'
+
+# Customer Create Elements
 customers_btn_create    =   '//a[@aria-label="Create"]'
 customers_txt_firstname =   '//input[@name="first_name"]'
 customers_txt_lastname =   '//input[@name="last_name"]'
@@ -12,4 +13,7 @@ customers_txt_zipcode =   '//input[@name="zipcode"]'
 customers_txt_password =   '//input[@name="password"]'
 customers_txt_confirm_password =   '//input[@name="confirm_password"]'
 customers_btn_save =   '//button[@aria-label="Save"]'
+
+# Table Elements
 table_row   =   '//table//tbody//tr'
+table_selector  =   '//table//tbody//tr[1]//td[2]'

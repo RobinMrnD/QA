@@ -11,22 +11,27 @@ TEST-000001
     Login User
 
 TEST-000002
-    ${users}    Get Random Customers
+    ${users}    Get Random Customers    ${5}
     Go To Customers Page
 
-    ${ALL_VERIFIED_CUSTOMERS}=    Create List
-    Set Suite Variable    ${ALL_VERIFIED_CUSTOMERS}
+    ${Verified_Customers} =    Create List
+    Set Suite Variable    ${Verified_Customers}
 
-    FOR    ${i}    IN    @{users}
-        Create Customer    ${i}
-        Verify Customer Input    ${i}
+    FOR    ${i}    IN RANGE    0    5
+        ${user}=    Set Variable    ${users}[${i}]
+        Create Customer    ${user}
+        Verify Customer Input    ${user}
     END
 
-    Log To Console    ===== FINAL VERIFIED CUSTOMERS =====
-    Log To Console    ${ALL_VERIFIED_CUSTOMERS}
+    Log To Console    ${Verified_Customers}
 
-
-    
+    ${total}=    Get Length    ${users}
+    ${end}=      Evaluate      ${total} + 1
+    FOR    ${index}    IN RANGE    1    ${end}
+        ${user_index}=    Evaluate    ${total} - ${index}
+        ${user}=          Set Variable    ${users}[${user_index}]
+        Verify Customer Data    ${user}    ${index}
+    END
 
 
 *** Keywords ***
