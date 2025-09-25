@@ -29,10 +29,10 @@ TEST-000001
 
 TEST-000002
     ${users}    Get Random Customers    6    5
-    Log To Console    ${users}
     Update Customer Table    ${users}
-    Sleep    500s
 
+TEST-000003
+    Get Table Row Data
    
 
 *** Keywords ***

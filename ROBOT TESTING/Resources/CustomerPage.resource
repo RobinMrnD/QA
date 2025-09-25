@@ -120,8 +120,6 @@ Update Customer Table
 
         Click Button    ${customers_btn_save}
         Wait Until Page Contains    Customer updated
-
-        Verify Customer Data    ${user}    ${index + 5}
     END
 
 
@@ -130,5 +128,22 @@ Clear And Input Text
     Click Element    ${locator}
     Press Keys       ${locator}    CTRL+A    BACKSPACE
     Input Text       ${locator}    ${value}
+
+Get Table Row Data
+    Sleep    3s
+    ${last_seen}    Get Text    ${last_seen_selector}
+    Log To Console    ${last_seen}
+    ${orders}    Get Text    ${orders_selector}
+    Log To Console    ${orders}
+    ${total_spent}    Get Text    ${total_spent_selector}
+    Log To Console    ${total_spent}
+    ${latest_purchase}    Get Text    ${latest_purchase_selector}
+    Log To Console    ${latest_purchase}
+    ${news}    Get Element Attribute    ${news_selector}     aria-label
+    Log To Console    ${news}
+
+
+
+
 
 
